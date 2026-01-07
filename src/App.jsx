@@ -288,6 +288,7 @@ const preguntasPorDia = {
     },
     {
       id: 20,
+      tipo: 'realidad',
       titulo: '🔥 Ana freelancer',
       pregunta: 'Ana cobra USD 2k/mes. ¿Cómo manejarlo?',
       opciones: [
