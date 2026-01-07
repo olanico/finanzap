@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const Icons = {
   Trophy: () => <span className="text-3xl">🏆</span>,
@@ -157,42 +157,509 @@ const preguntasPorDia = {
   ]
 };
 
-preguntasPorDia[0] = preguntasPorDia[1];
-preguntasPorDia[3] = preguntasPorDia[1];
-preguntasPorDia[4] = preguntasPorDia[2];
-preguntasPorDia[5] = preguntasPorDia[1];
-preguntasPorDia[6] = preguntasPorDia[2];
+  3: [
+    {
+      id: 11,
+      tipo: 'decision',
+      titulo: '🎯 Encontraste $50k',
+      pregunta: 'Apareció un billete de $50k viejo en un cajón. ¿Qué hacés?',
+      opciones: [
+        { texto: 'Lo gasto en algo que quiero', correcto: false },
+        { texto: 'Lo cambio a dólares YA', correcto: true },
+        { texto: 'Lo dejo ahí por las dudas', correcto: false },
+        { texto: 'Plazo fijo UVA', correcto: false }
+      ],
+      puntos: 10,
+      explicacion: '$50k hoy son USD 40. En un mes, tal vez USD 35. Cada hora con pesos en mano es pérdida. Dolarizás primero, pensás después.'
+    },
+    {
+      id: 12,
+      tipo: 'noticia',
+      titulo: '📰 BCRA subió tasa al 100% anual',
+      pregunta: '¿Esto significa que conviene el plazo fijo en pesos?',
+      opciones: [
+        { texto: 'Sí, 100% es mucho', correcto: false },
+        { texto: 'No, la inflación será mayor', correcto: true },
+        { texto: 'Depende del banco', correcto: false },
+        { texto: 'Solo si es UVA', correcto: false }
+      ],
+      puntos: 15,
+      explicacion: 'Si suben la tasa al 100%, esperan inflación del 120%+. Es señal de alarma, no oportunidad. El BCRA no regala plata.'
+    },
+    {
+      id: 13,
+      tipo: 'calculo',
+      titulo: '🧮 ¿Cuánto para jubilarte?',
+      pregunta: 'Querés vivir con USD 1.000/mes sin trabajar. ¿Cuánto necesitás ahorrar para jubilarte?',
+      opciones: [
+        { texto: 'USD 100k', correcto: false },
+        { texto: 'USD 300k', correcto: true },
+        { texto: 'USD 500k', correcto: false },
+        { texto: 'USD 1 millón', correcto: false }
+      ],
+      puntos: 20,
+      explicacion: 'Regla del 4%: necesitás 25 veces tu gasto anual. USD 1k/mes × 12 = USD 12k/año × 25 = USD 300k. Con eso, retirás 4% anual indefinidamente.'
+    },
+    {
+      id: 14,
+      tipo: 'trivia',
+      titulo: '💰 ¿Qué es el dólar MEP?',
+      pregunta: 'El dólar MEP es:',
+      opciones: [
+        { texto: 'El dólar oficial', correcto: false },
+        { texto: 'El que se compra en la Bolsa', correcto: true },
+        { texto: 'El dólar blue', correcto: false },
+        { texto: 'Una estafa', correcto: false }
+      ],
+      puntos: 10,
+      explicacion: 'MEP = Mercado Electrónico de Pagos. Comprás un bono en pesos, lo vendés en dólares. Legal, más barato que blue, pero tiene parking.'
+    },
+    {
+      id: 15,
+      tipo: 'realidad',
+      titulo: '🔥 Juan y el Bitcoin',
+      pregunta: 'Juan tiene USD 5k. Quiere poner USD 1k en Bitcoin. ¿Es buena idea?',
+      opciones: [
+        { texto: 'No, es muy arriesgado', correcto: false },
+        { texto: 'Sí, pero solo el 20%', correcto: true },
+        { texto: 'Sí, todo a BTC', correcto: false },
+        { texto: 'No, mejor plazo fijo', correcto: false }
+      ],
+      puntos: 25,
+      explicacion: 'Regla: nunca más del 10-20% en activos volátiles. USD 1k de USD 5k = 20%. Si BTC cae 50%, perdés USD 500, no USD 2.500. Diversificación es clave.'
+    }
+  ],
+  4: [
+    {
+      id: 16,
+      tipo: 'trivia',
+      titulo: '💰 ¿Qué es un ETF?',
+      pregunta: 'Un ETF es:',
+      opciones: [
+        { texto: 'Una criptomoneda', correcto: false },
+        { texto: 'Un fondo que replica un índice', correcto: true },
+        { texto: 'Una acción', correcto: false },
+        { texto: 'Un plazo fijo', correcto: false }
+      ],
+      puntos: 10,
+      explicacion: 'ETF = Exchange Traded Fund. Es como comprar una "canasta" de acciones. Ejemplo: ETF del S&P 500 = las 500 empresas más grandes de USA.'
+    },
+    {
+      id: 17,
+      tipo: 'noticia',
+      titulo: '📰 Inflación diciembre: 25%',
+      pregunta: '¿Cómo afecta esto a tu aguinaldo?',
+      opciones: [
+        { texto: 'No me afecta', correcto: false },
+        { texto: 'Mi aguinaldo vale 20% menos que en junio', correcto: true },
+        { texto: 'Gané poder adquisitivo', correcto: false },
+        { texto: 'Depende de mi sueldo', correcto: false }
+      ],
+      puntos: 15,
+      explicacion: 'Si inflación semestral fue 25%, tu aguinaldo de diciembre compra 20% menos que el de junio (1/1.25 = 0.80). Dolarizar apenas cobrás.'
+    },
+    {
+      id: 18,
+      tipo: 'calculo',
+      titulo: '🧮 Costo de no invertir',
+      pregunta: 'Guardás USD 10k en el colchón 10 años (0% retorno). Si hubieras invertido al 8% anual, ¿cuánto tendrías?',
+      opciones: [
+        { texto: 'USD 11k', correcto: false },
+        { texto: 'USD 18k', correcto: false },
+        { texto: 'USD 21.6k', correcto: true },
+        { texto: 'USD 15k', correcto: false }
+      ],
+      puntos: 20,
+      explicacion: 'USD 10k × (1.08)^10 = USD 21.589. Perdiste USD 11.589 por no invertir. El costo de no hacer nada es ENORME.'
+    },
+    {
+      id: 19,
+      tipo: 'decision',
+      titulo: '🎯 Préstamo personal',
+      pregunta: 'Te ofrecen préstamo al 80% TNA en pesos. ¿Lo tomás?',
+      opciones: [
+        { texto: 'Sí, 80% es poco', correcto: false },
+        { texto: 'No, es carísimo', correcto: true },
+        { texto: 'Depende para qué', correcto: false },
+        { texto: 'Solo si inflación es mayor', correcto: false }
+      ],
+      puntos: 10,
+      explicacion: '80% TNA suena "bajo", pero es CFT 110%+. Y si inflación baja, te morís pagando. Préstamos en pesos casi nunca convienen.'
+    },
+    {
+      id: 20,
+      titulo: '🔥 Ana freelancer',
+      pregunta: 'Ana cobra USD 2k/mes. ¿Cómo manejarlo?',
+      opciones: [
+        { texto: 'Pesificar todo', correcto: false },
+        { texto: 'Mantener 70% en USD, pesificar lo que gasta', correcto: true },
+        { texto: 'Todo a Bitcoin', correcto: false },
+        { texto: 'Comprar propiedades', correcto: false }
+      ],
+      puntos: 25,
+      explicacion: 'Regla de oro: si cobrás en dólares, ahorrás en dólares. Pesificá solo gastos del mes. El resto en USD o invertido. Nunca al revés.'
+    }
+  ],
+  5: [
+    {
+      id: 21,
+      tipo: 'decision',
+      titulo: '🎯 Vacaciones a Brasil',
+      pregunta: 'Sale USD 1.500. Tenés USD 3k ahorrados. ¿Vas?',
+      opciones: [
+        { texto: 'Sí, me lo merezco', correcto: false },
+        { texto: 'No, es el 50% de mi patrimonio', correcto: true },
+        { texto: 'Sí, pero más barato', correcto: false },
+        { texto: 'Voy y lo financio', correcto: false }
+      ],
+      puntos: 10,
+      explicacion: 'Gastar 50% del patrimonio en vacaciones es un lujo que no podés darte. Regla: gastos grandes solo cuando tenés 10x ese monto. Con USD 3k, máximo USD 300 en vacaciones.'
+    },
+    {
+      id: 22,
+      tipo: 'noticia',
+      titulo: '📰 Oro alcanzó USD 2.100/onza',
+      pregunta: '¿Conviene comprar oro ahora?',
+      opciones: [
+        { texto: 'Sí, está en máximos', correcto: false },
+        { texto: 'No, está caro', correcto: false },
+        { texto: 'Depende de tu estrategia', correcto: true },
+        { texto: 'Mejor Bitcoin', correcto: false }
+      ],
+      puntos: 15,
+      explicacion: 'El oro no "sube", preserva valor. Si está en máximos en USD, es porque el dólar pierde poder. El oro es seguro, no crecimiento.'
+    },
+    {
+      id: 23,
+      tipo: 'calculo',
+      titulo: '🧮 Alquiler vs Compra',
+      pregunta: 'Alquiler: USD 500/mes. Comprar: USD 120k. Inversión 8% anual. ¿Qué conviene?',
+      opciones: [
+        { texto: 'Comprar', correcto: false },
+        { texto: 'Alquilar e invertir', correcto: true },
+        { texto: 'Depende', correcto: false },
+        { texto: 'Es lo mismo', correcto: false }
+      ],
+      puntos: 20,
+      explicacion: 'USD 120k al 8% = USD 9.6k/año = USD 800/mes. Alquilás por USD 500, sobran USD 300. En 10 años: USD 260k vs depto en USD 120k.'
+    },
+    {
+      id: 24,
+      tipo: 'trivia',
+      titulo: '💰 ¿Qué es DCA?',
+      pregunta: 'DCA (Dollar Cost Averaging) significa:',
+      opciones: [
+        { texto: 'Comprar todo de una', correcto: false },
+        { texto: 'Comprar un poco cada mes', correcto: true },
+        { texto: 'Vender cuando baja', correcto: false },
+        { texto: 'Un tipo de cripto', correcto: false }
+      ],
+      puntos: 10,
+      explicacion: 'DCA = comprar regularmente sin importar precio. Ej: USD 100/mes en Bitcoin. A veces caro, a veces barato. Promediás. Estrategia más segura.'
+    },
+    {
+      id: 25,
+      tipo: 'realidad',
+      titulo: '🔥 Lucía a los 30',
+      pregunta: 'Lucía: 30 años, USD 20k, sueldo USD 2k/mes. ¿Qué priorizar?',
+      opciones: [
+        { texto: 'Comprarse un depto', correcto: false },
+        { texto: 'Invertir agresivamente (80% acciones)', correcto: true },
+        { texto: 'Plazo fijo seguro', correcto: false },
+        { texto: 'Todo en efectivo', correcto: false }
+      ],
+      puntos: 25,
+      explicacion: 'A los 30, con buen ingreso y USD 20k, tenés 35 años para crecer. Tolerás volatilidad. 80% ETFs, 20% bonos. El tiempo es tu aliado.'
+    }
+  ],
+  6: [
+    {
+      id: 26,
+      tipo: 'calculo',
+      titulo: '🔥 Devaluación vs Inflación',
+      pregunta: 'Dólar: $1.000 → $1.200 (20%). Inflación: 15%. ¿Conclusión?',
+      opciones: [
+        { texto: 'Dólar ganó a inflación', correcto: true },
+        { texto: 'Perdí poder adquisitivo', correcto: false },
+        { texto: 'Es lo mismo', correcto: false },
+        { texto: 'Inflación fue mayor', correcto: false }
+      ],
+      puntos: 20,
+      explicacion: 'Devaluación 20% > Inflación 15% = dólar preservó mejor. Si tenías USD, ganaste 5% real (1.20/1.15=1.043). Con pesos, perdiste 15%.'
+    },
+    {
+      id: 27,
+      tipo: 'calculo',
+      titulo: '🧮 BTC en pesos',
+      pregunta: 'Compraste BTC a USD 30k (enero). Hoy USD 45k (50%). Dólar: $1.000 → $1.300. ¿Ganancia en pesos?',
+      opciones: [
+        { texto: '50%', correcto: false },
+        { texto: '95%', correcto: true },
+        { texto: '80%', correcto: false },
+        { texto: '30%', correcto: false }
+      ],
+      puntos: 20,
+      explicacion: 'Enero: BTC=$30M. Hoy: USD 45k=$58.5M. (58.5/30)-1=95%. Por eso en Argentina, medir en pesos es engañoso. Siempre medí en USD.'
+    },
+    {
+      id: 28,
+      tipo: 'decision',
+      titulo: '🎯 Crédito UVA',
+      pregunta: 'Cuota $350k, ajusta inflación, 20 años. Sueldo: $800k. ¿Lo tomás?',
+      opciones: [
+        { texto: 'Sí, cuota baja', correcto: false },
+        { texto: 'No, muy arriesgado', correcto: true },
+        { texto: 'Solo si sueldo sigue inflación', correcto: true },
+        { texto: 'Sí, siempre conviene', correcto: false }
+      ],
+      puntos: 20,
+      explicacion: 'Cuota hoy: 43% sueldo. Si tu sueldo no sigue inflación, en 2 años pagás 60-70%. Ruleta rusa. Solo con ingreso en USD o paritarias.'
+    },
+    {
+      id: 29,
+      tipo: 'trivia',
+      titulo: '💰 ¿Qué es carry trade?',
+      pregunta: 'Carry trade en Argentina:',
+      opciones: [
+        { texto: 'Comprar dólares y holdear', correcto: false },
+        { texto: 'Pesos al 80% vs dólar 40%', correcto: true },
+        { texto: 'Invertir en Bitcoin', correcto: false },
+        { texto: 'Un plazo fijo', correcto: false }
+      ],
+      puntos: 20,
+      explicacion: 'Carry = deuda barata en una moneda, invertir en otra con mayor retorno. Ej: pesos 80% vs dólar 40%. Si ganás, explotás. Si devalúa más, te fundís.'
+    },
+    {
+      id: 30,
+      tipo: 'realidad',
+      titulo: '🔥 Pablo con USD 100k',
+      pregunta: 'Pablo: 35 años, USD 100k, CABA, soltero. ¿Qué hacer?',
+      opciones: [
+        { texto: 'Comprar un depto', correcto: false },
+        { texto: '60% ETFs, 20% BTC, 20% cash', correcto: true },
+        { texto: 'Todo plazo fijo USD', correcto: false },
+        { texto: 'Irse del país', correcto: false }
+      ],
+      puntos: 25,
+      explicacion: 'A los 35, con USD 100k, depto te deja sin liquidez. Mejor: invertir agresivo, alquilar, en 10 años tener USD 250k+ para algo mejor. Propiedad para 45+.'
+    }
+  ],
+  0: [
+    {
+      id: 31,
+      tipo: 'trivia',
+      titulo: '💰 Reserva de emergencia',
+      pregunta: '¿Cuántos meses de gastos deberías tener ahorrados?',
+      opciones: [
+        { texto: '1-2 meses', correcto: false },
+        { texto: '3-6 meses', correcto: true },
+        { texto: '12 meses', correcto: false },
+        { texto: 'No hace falta', correcto: false }
+      ],
+      puntos: 10,
+      explicacion: '3-6 meses de gastos en activo líquido (dólares). Para aguantar sin ingresos por pérdida de laburo, enfermedad, etc. Es tu red de seguridad.'
+    },
+    {
+      id: 32,
+      tipo: 'noticia',
+      titulo: '📰 Sube precio de alimentos 8%',
+      pregunta: 'Tu sueldo subió 5% este mes. ¿Qué significa?',
+      opciones: [
+        { texto: 'Gané 5%', correcto: false },
+        { texto: 'Perdí 3% de poder adquisitivo', correcto: true },
+        { texto: 'Quedé igual', correcto: false },
+        { texto: 'Depende', correcto: false }
+      ],
+      puntos: 15,
+      explicacion: '(1.05/1.08)-1 = -2.8%. Tu sueldo creció menos que la inflación. Perdiste poder adquisitivo real, aunque tengas más billetes.'
+    },
+    {
+      id: 33,
+      tipo: 'calculo',
+      titulo: '🧮 Regla del 72',
+      pregunta: 'Invertís al 8% anual. ¿En cuántos años duplicás tu plata?',
+      opciones: [
+        { texto: '7 años', correcto: false },
+        { texto: '9 años', correcto: true },
+        { texto: '12 años', correcto: false },
+        { texto: '8 años', correcto: false }
+      ],
+      puntos: 20,
+      explicacion: 'Regla del 72: dividís 72 por tasa anual. 72/8 = 9 años. Es aproximación rápida para calcular tiempo de duplicación.'
+    },
+    {
+      id: 34,
+      tipo: 'decision',
+      titulo: '🎯 Herencia de $5M',
+      pregunta: 'Recibís $5M de herencia. ¿Qué hacés primero?',
+      opciones: [
+        { texto: 'Comprar algo grande', correcto: false },
+        { texto: 'Dolarizar inmediatamente', correcto: true },
+        { texto: 'Plazo fijo en pesos', correcto: false },
+        { texto: 'Repartirlo en gastos', correcto: false }
+      ],
+      puntos: 10,
+      explicacion: 'Paso 1: proteger el capital. Dolarizás YA. Paso 2: respirás. Paso 3: planificás qué hacer con esos USD. Nunca al revés.'
+    },
+    {
+      id: 35,
+      tipo: 'realidad',
+      titulo: '🔥 María ahorra USD 300/mes',
+      pregunta: 'María: 25 años, ahorra USD 300/mes. ¿En 10 años cuánto tiene al 8% anual?',
+      opciones: [
+        { texto: 'USD 36k', correcto: false },
+        { texto: 'USD 55k', correcto: true },
+        { texto: 'USD 42k', correcto: false },
+        { texto: 'USD 30k', correcto: false }
+      ],
+      puntos: 25,
+      explicacion: 'USD 300/mes × 120 meses = USD 36k de capital. Con interés compuesto al 8%, llega a USD 55k. El tiempo hace magia.'
+    }
+  ]
+};
+
+// Copiar contenido para días que aún no tienen asignación específica
+preguntasPorDia[1] = preguntasPorDia[1]; // Lunes ya existe
+preguntasPorDia[2] = preguntasPorDia[2]; // Martes ya existe  
+preguntasPorDia[3] = preguntasPorDia[3]; // Miércoles ahora tiene contenido
+preguntasPorDia[4] = preguntasPorDia[4]; // Jueves ahora tiene contenido
+preguntasPorDia[5] = preguntasPorDia[5]; // Viernes ahora tiene contenido
+preguntasPorDia[6] = preguntasPorDia[6]; // Sábado ahora tiene contenido
+preguntasPorDia[0] = preguntasPorDia[0]; // Domingo ahora tiene contenido
+
+// Copiar contenido para días que aún no tienen asignación específica
+preguntasPorDia[1] = preguntasPorDia[1]; // Lunes ya existe
+preguntasPorDia[2] = preguntasPorDia[2]; // Martes ya existe  
+preguntasPorDia[3] = preguntasPorDia[3]; // Miércoles ahora tiene contenido
+preguntasPorDia[4] = preguntasPorDia[4]; // Jueves ahora tiene contenido
+preguntasPorDia[5] = preguntasPorDia[5]; // Viernes ahora tiene contenido
+preguntasPorDia[6] = preguntasPorDia[6]; // Sábado ahora tiene contenido
+preguntasPorDia[0] = preguntasPorDia[0]; // Domingo ahora tiene contenido
 
 export default function App() {
-  const [pantalla, setPantalla] = useState('login');
+  const [pantalla, setPantalla] = useState('loading');
   const [nombreUsuario, setNombreUsuario] = useState('');
   const [desafioActual, setDesafioActual] = useState(0);
   const [respuestaSeleccionada, setRespuestaSeleccionada] = useState(null);
   const [mostrarExplicacion, setMostrarExplicacion] = useState(false);
   const [puntosHoy, setPuntosHoy] = useState(0);
-  const [racha] = useState(3);
+  const [racha, setRacha] = useState(1);
   const [puntosAcumulados, setPuntosAcumulados] = useState(0);
+  const [leaderboard, setLeaderboard] = useState([]);
+  const [cargando, setCargando] = useState(false);
   
   const diaActual = new Date().getDay();
   const desafiosDiarios = preguntasPorDia[diaActual] || preguntasPorDia[1];
 
-  const [leaderboard, setLeaderboard] = useState([
-    { nombre: 'Martín', puntos: 850, nivel: 'Inversor' },
-    { nombre: 'Laura', puntos: 720, nivel: 'Ahorrador Pro' },
-    { nombre: 'Diego', puntos: 680, nivel: 'Ahorrador Pro' },
-    { nombre: 'Ana', puntos: 540, nivel: 'Ahorrador' },
-    { nombre: 'Carlos', puntos: 420, nivel: 'Principiante' }
-  ]);
+  // Cargar leaderboard y usuario al inicio
+  useEffect(() => {
+    cargarDatos();
+  }, []);
 
-  const handleLogin = (e) => {
+  const cargarDatos = async () => {
+    try {
+      // Cargar leaderboard compartido
+      const leaderboardData = await window.storage.get('leaderboard-global', true);
+      if (leaderboardData) {
+        setLeaderboard(JSON.parse(leaderboardData.value));
+      }
+
+      // Cargar último usuario
+      const ultimoUsuario = await window.storage.get('ultimo-usuario', false);
+      if (ultimoUsuario) {
+        const userData = JSON.parse(ultimoUsuario.value);
+        setNombreUsuario(userData.nombre);
+        setPuntosAcumulados(userData.puntos || 0);
+        setRacha(userData.racha || 1);
+        setPantalla('home');
+      } else {
+        setPantalla('login');
+      }
+    } catch (error) {
+      console.log('Primera vez, inicializando...');
+      setPantalla('login');
+    }
+  };
+
+  const guardarUsuario = async (nombre, puntos, rachaActual) => {
+    try {
+      // Guardar datos del usuario local
+      await window.storage.set('ultimo-usuario', JSON.stringify({
+        nombre,
+        puntos,
+        racha: rachaActual,
+        ultimaFecha: new Date().toISOString()
+      }), false);
+
+      // Actualizar leaderboard global
+      let leaderboardActual = [];
+      try {
+        const leaderboardData = await window.storage.get('leaderboard-global', true);
+        if (leaderboardData) {
+          leaderboardActual = JSON.parse(leaderboardData.value);
+        }
+      } catch (e) {
+        leaderboardActual = [];
+      }
+
+      // Buscar si el usuario ya existe
+      const indexUsuario = leaderboardActual.findIndex(u => u.nombre.toLowerCase() === nombre.toLowerCase());
+      
+      if (indexUsuario >= 0) {
+        leaderboardActual[indexUsuario].puntos = puntos;
+        leaderboardActual[indexUsuario].racha = rachaActual;
+      } else {
+        leaderboardActual.push({
+          nombre,
+          puntos,
+          racha: rachaActual,
+          nivel: puntos < 100 ? 'Principiante' : puntos < 300 ? 'Ahorrador' : puntos < 600 ? 'Ahorrador Pro' : 'Inversor'
+        });
+      }
+
+      // Ordenar por puntos
+      leaderboardActual.sort((a, b) => b.puntos - a.puntos);
+      
+      // Guardar solo top 10
+      const top10 = leaderboardActual.slice(0, 10);
+      await window.storage.set('leaderboard-global', JSON.stringify(top10), true);
+      
+      setLeaderboard(top10);
+    } catch (error) {
+      console.error('Error guardando usuario:', error);
+    }
+  };
+
+  const handleLogin = async (e) => {
     e.preventDefault();
     if (nombreUsuario.trim()) {
-      const usuarioExiste = leaderboard.find(u => u.nombre === nombreUsuario);
-      if (!usuarioExiste) {
-        setLeaderboard([{ nombre: nombreUsuario, puntos: 0, nivel: 'Principiante' }, ...leaderboard]);
-      } else {
-        setPuntosAcumulados(usuarioExiste.puntos);
+      setCargando(true);
+      
+      // Verificar si el usuario ya existe en el leaderboard
+      try {
+        const leaderboardData = await window.storage.get('leaderboard-global', true);
+        let puntosExistentes = 0;
+        let rachaExistente = 1;
+        
+        if (leaderboardData) {
+          const leaderboardActual = JSON.parse(leaderboardData.value);
+          const usuarioExistente = leaderboardActual.find(u => u.nombre.toLowerCase() === nombreUsuario.toLowerCase());
+          
+          if (usuarioExistente) {
+            puntosExistentes = usuarioExistente.puntos || 0;
+            rachaExistente = usuarioExistente.racha || 1;
+          }
+        }
+        
+        setPuntosAcumulados(puntosExistentes);
+        setRacha(rachaExistente);
+        
+        await guardarUsuario(nombreUsuario, puntosExistentes, rachaExistente);
+      } catch (error) {
+        console.log('Usuario nuevo');
       }
+      
+      setCargando(false);
       setPantalla('bienvenida');
     }
   };
@@ -214,11 +681,8 @@ export default function App() {
       setRespuestaSeleccionada(null);
       setMostrarExplicacion(false);
     } else {
-      const nuevosLideres = leaderboard.map(u => 
-        u.nombre === nombreUsuario ? { ...u, puntos: puntosAcumulados } : u
-      );
-      nuevosLideres.sort((a, b) => b.puntos - a.puntos);
-      setLeaderboard(nuevosLideres);
+      // Guardar puntos finales
+      guardarUsuario(nombreUsuario, puntosAcumulados, racha);
       setPantalla('resultado');
     }
   };
@@ -230,6 +694,14 @@ export default function App() {
     setMostrarExplicacion(false);
     setPuntosHoy(0);
   };
+
+  if (pantalla === 'loading') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 flex items-center justify-center">
+        <div className="text-white text-2xl">Cargando...</div>
+      </div>
+    );
+  }
 
   if (pantalla === 'login') {
     return (
@@ -259,10 +731,10 @@ export default function App() {
               
               <button
                 type="submit"
-                disabled={!nombreUsuario.trim()}
+                disabled={!nombreUsuario.trim() || cargando}
                 className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-4 rounded-xl shadow-lg hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
-                Empezar a aprender 🚀
+                {cargando ? 'Cargando...' : 'Empezar a aprender 🚀'}
               </button>
             </form>
 
@@ -335,8 +807,8 @@ export default function App() {
   }
 
   if (pantalla === 'home') {
-    const usuarioEnLeaderboard = leaderboard.find(u => u.nombre === nombreUsuario);
-    const posicion = leaderboard.findIndex(u => u.nombre === nombreUsuario) + 1;
+    const usuarioEnLeaderboard = leaderboard.find(u => u.nombre.toLowerCase() === nombreUsuario.toLowerCase());
+    const posicion = leaderboard.findIndex(u => u.nombre.toLowerCase() === nombreUsuario.toLowerCase()) + 1;
 
     return (
       <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900">
@@ -431,7 +903,9 @@ export default function App() {
                 <Icons.Trophy />
                 <div className="text-left">
                   <p className="text-white font-bold">Leaderboard</p>
-                  <p className="text-purple-200 text-sm">Estás en el puesto #{posicion}</p>
+                  <p className="text-purple-200 text-sm">
+                    {posicion > 0 ? `Estás en el puesto #${posicion}` : 'Unite al ranking'}
+                  </p>
                 </div>
               </div>
               <Icons.ChevronRight />
@@ -567,7 +1041,9 @@ export default function App() {
                   <span className="font-bold text-purple-900 text-xl">{puntosAcumulados} pts</span>
                 </div>
                 <p className="text-sm text-gray-500">
-                  Estás en el top {leaderboard.findIndex(l => l.nombre === nombreUsuario) + 1} del leaderboard 🏆
+                  {leaderboard.findIndex(l => l.nombre.toLowerCase() === nombreUsuario.toLowerCase()) >= 0 
+                    ? `Estás en el top ${leaderboard.findIndex(l => l.nombre.toLowerCase() === nombreUsuario.toLowerCase()) + 1} del leaderboard 🏆`
+                    : 'Te uniste al ranking 🏆'}
                 </p>
               </div>
             </div>
@@ -601,41 +1077,48 @@ export default function App() {
             <p className="text-purple-200">Los mejores de la semana 🔥</p>
           </div>
 
-          <div className="space-y-3 mb-6">
-            {leaderboard.map((usuario, index) => (
-              <div
-                key={index}
-                className={`rounded-2xl p-5 ${
-                  usuario.nombre === nombreUsuario
-                    ? 'bg-gradient-to-r from-yellow-400 to-orange-500 border-2 border-yellow-300'
-                    : 'bg-white/10 backdrop-blur-lg border border-white/20'
-                }`}
-              >
-                <div className="flex items-center gap-4">
-                  <div className="text-3xl font-black text-white">
-                    {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`}
-                  </div>
-                  
-                  <div className="flex-1">
-                    <p className="font-bold text-white">
-                      {usuario.nombre}
-                      {usuario.nombre === nombreUsuario && ' (Vos)'}
-                    </p>
-                    <p className={`text-sm ${usuario.nombre === nombreUsuario ? 'text-orange-100' : 'text-purple-200'}`}>
-                      {usuario.nivel}
-                    </p>
-                  </div>
-                  
-                  <div className="text-right">
-                    <p className="text-2xl font-bold text-white">{usuario.puntos}</p>
-                    <p className={`text-xs ${usuario.nombre === nombreUsuario ? 'text-orange-100' : 'text-purple-200'}`}>
-                      puntos
-                    </p>
+          {leaderboard.length === 0 ? (
+            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 mb-6 border border-white/20 text-center">
+              <p className="text-white text-lg mb-2">Sé el primero en el ranking 🚀</p>
+              <p className="text-purple-200 text-sm">Completá el desafío para aparecer aquí</p>
+            </div>
+          ) : (
+            <div className="space-y-3 mb-6">
+              {leaderboard.map((usuario, index) => (
+                <div
+                  key={index}
+                  className={`rounded-2xl p-5 ${
+                    usuario.nombre.toLowerCase() === nombreUsuario.toLowerCase()
+                      ? 'bg-gradient-to-r from-yellow-400 to-orange-500 border-2 border-yellow-300'
+                      : 'bg-white/10 backdrop-blur-lg border border-white/20'
+                  }`}
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="text-3xl font-black text-white">
+                      {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`}
+                    </div>
+                    
+                    <div className="flex-1">
+                      <p className="font-bold text-white">
+                        {usuario.nombre}
+                        {usuario.nombre.toLowerCase() === nombreUsuario.toLowerCase() && ' (Vos)'}
+                      </p>
+                      <p className={`text-sm ${usuario.nombre.toLowerCase() === nombreUsuario.toLowerCase() ? 'text-orange-100' : 'text-purple-200'}`}>
+                        {usuario.nivel}
+                      </p>
+                    </div>
+                    
+                    <div className="text-right">
+                      <p className="text-2xl font-bold text-white">{usuario.puntos}</p>
+                      <p className={`text-xs ${usuario.nombre.toLowerCase() === nombreUsuario.toLowerCase() ? 'text-orange-100' : 'text-purple-200'}`}>
+                        puntos
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
 
           <button
             onClick={() => setPantalla('home')}
