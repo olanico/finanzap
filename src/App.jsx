@@ -154,8 +154,7 @@ const preguntasPorDia = {
       puntos: 25,
       explicacion: 'El auto es un pasivo. Se deprecia 15-20% anual. Los USD 15k invertidos al 8% anual son USD 32k en 10 años. El auto en 10 años vale USD 3k. ¿Querés movilidad o querés patrimonio? Si podés esperar, esperá.'
     }
-  ]
-},
+  ],
 
   3: [
     {
