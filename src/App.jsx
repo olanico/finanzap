@@ -765,31 +765,35 @@ export default function App() {
             </div>
 
             <div className="space-y-4 text-gray-700 leading-relaxed mb-8">
+              <p className="text-lg">
+                Acá vas a conocer a <strong className="text-purple-900">"El Inversor Perfecto"</strong> 🤓
+              </p>
+
               <p>
-                <strong className="text-purple-900">FinanZap no es la verdad absoluta.</strong> Es una herramienta educativa con un objetivo claro: ayudarte a construir una vida financieramente ordenada y sólida en el largo plazo.
+                Ese personaje que NUNCA gasta en nada, invierte hasta el último peso, y te mira feo si comprás un alfajor. Sí, <strong>ese psicópata</strong> que duerme en un colchón lleno de dólares.
               </p>
 
               <div className="bg-purple-50 rounded-xl p-4 border-l-4 border-purple-500">
-                <p className="font-semibold text-purple-900 mb-2">🎯 Nuestra filosofía:</p>
+                <p className="font-semibold text-purple-900 mb-2">🎯 Su filosofía (extrema):</p>
                 <ul className="space-y-2 text-sm">
-                  <li>✓ Priorizar el <strong>patrimonio a largo plazo</strong> sobre el consumo inmediato</li>
-                  <li>✓ Protegerte de la inflación y la devaluación</li>
-                  <li>✓ Tomar decisiones basadas en <strong>retorno real</strong>, no nominal</li>
-                  <li>✓ Construir libertad financiera con disciplina y paciencia</li>
+                  <li>💎 <strong>Patrimonio > Todo</strong> (incluso tu cumpleaños)</li>
+                  <li>🚫 Gastos sin necesidad = pecado mortal</li>
+                  <li>📈 Si no genera retorno, no existe</li>
+                  <li>🏃 Auto, vacaciones, gustos = "pasivos que te empobrecen"</li>
                 </ul>
               </div>
 
               <p>
-                Muchas de nuestras "respuestas correctas" priorizan la estabilidad financiera sobre otras opciones válidas. Por ejemplo: preferimos invertir antes que comprar un auto, o ahorrar en dólares antes que gastar en pesos.
+                <strong className="text-purple-900">¿Tenés que ser así de intenso?</strong> Por favor, no. Pero este juego te muestra el <em>pensamiento extremo</em> de alguien obsesionado con la libertad financiera.
               </p>
 
-              <p>
-                <strong className="text-purple-900">¿Esto significa que es la única forma de vivir?</strong> No. Cada persona tiene sus prioridades. Pero si tu objetivo es construir patrimonio y seguridad financiera en Argentina, estos principios funcionan.
+              <p className="text-sm">
+                Tomalo como un <strong>experimento mental</strong>: ¿qué pasaría si priorizaras patrimonio sobre todo? Después vos decidís qué tanto de esto aplicás a tu vida real. Podés ser 80% Inversor Perfecto y 20% persona normal. O al revés 😂
               </p>
 
               <div className="bg-yellow-50 rounded-xl p-4 border-l-4 border-yellow-500">
                 <p className="text-sm">
-                  <strong className="text-yellow-900">💡 Recordá:</strong> Las finanzas personales son un estilo de vida. Nosotros te enseñamos el camino hacia la solidez financiera. Vos decidís cuánto de ese camino querés recorrer.
+                  <strong className="text-yellow-900">💡 Disclaimer:</strong> Este personaje es una caricatura. En la vida real, balance > extremismo. Pero conocer este mindset te ayuda a tomar mejores decisiones.
                 </p>
               </div>
             </div>
