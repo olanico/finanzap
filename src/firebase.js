@@ -68,13 +68,31 @@ export const updateUserScore = async (userId, nombre, puntosGanados) => {
                 nuevoPuntaje < 300 ? 'Ahorrador' : 
                 nuevoPuntaje < 600 ? 'Ahorrador Pro' : 'Inversor';
 
+  const hoy = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+  const ultimaFecha = currentData.ultimaPartida ? currentData.ultimaPartida.split('T')[0] : null;
+  
+  // Calcular racha
+  let nuevaRacha = currentData.racha || 1;
+  if (ultimaFecha) {
+    const ayer = new Date();
+    ayer.setDate(ayer.getDate() - 1);
+    const ayerStr = ayer.toISOString().split('T')[0];
+    
+    if (ultimaFecha === ayerStr) {
+      nuevaRacha += 1; // Día consecutivo
+    } else if (ultimaFecha !== hoy) {
+      nuevaRacha = 1; // Se rompió la racha
+    }
+  }
+
   const dataToSave = {
     nombre,
     puntosAcumulados: nuevoPuntaje,
     nivel,
     partidasJugadas: (currentData.partidasJugadas || 0) + 1,
     ultimaPartida: new Date().toISOString(),
-    racha: currentData.racha || 1
+    ultimaFechaJuego: hoy, // Fecha del último juego (solo día)
+    racha: nuevaRacha
   };
 
   // Guardar en users
@@ -85,7 +103,7 @@ export const updateUserScore = async (userId, nombre, puntosGanados) => {
     nombre,
     puntos: nuevoPuntaje,
     nivel,
-    racha: dataToSave.racha,
+    racha: nuevaRacha,
     ultimaPartida: dataToSave.ultimaPartida
   }, { merge: true });
 
@@ -115,8 +133,16 @@ export const getUserHistory = async (userId) => {
       partidasJugadas: data.partidasJugadas || 0,
       racha: data.racha || 1,
       nivel: data.nivel || 'Principiante',
-      ultimaPartida: data.ultimaPartida || null
+      ultimaPartida: data.ultimaPartida || null,
+      ultimaFechaJuego: data.ultimaFechaJuego || null
     };
   }
   return null;
+};
+
+export const puedeJugarHoy = (userData) => {
+  if (!userData || !userData.ultimaFechaJuego) return true;
+  
+  const hoy = new Date().toISOString().split('T')[0];
+  return userData.ultimaFechaJuego !== hoy;
 };

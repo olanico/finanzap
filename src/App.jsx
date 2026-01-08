@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { auth, loginWithGoogle, logout, getUserData, updateUserScore, getLeaderboard, getUserHistory } from './firebase';
+import { auth, loginWithGoogle, logout, getUserData, updateUserScore, getLeaderboard, getUserHistory, puedeJugarHoy } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 
 const Icons = {
@@ -179,6 +179,7 @@ export default function App() {
   const [leaderboard, setLeaderboard] = useState([]);
   const [cargando, setCargando] = useState(false);
   const [historial, setHistorial] = useState(null);
+  const [puedeJugar, setPuedeJugar] = useState(true);
   
   const diaActual = new Date().getDay();
   const desafiosDiarios = preguntasPorDia[diaActual] || preguntasPorDia[1];
@@ -188,8 +189,14 @@ export default function App() {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
-        await cargarDatosUsuario(currentUser.uid);
-        setPantalla('home');
+        const userData = await cargarDatosUsuario(currentUser.uid);
+        
+        // Si es primera vez (sin historial), mostrar bienvenida
+        if (!userData || userData.partidasJugadas === 0) {
+          setPantalla('bienvenida');
+        } else {
+          setPantalla('home');
+        }
       } else {
         setUser(null);
         setPantalla('login');
@@ -206,12 +213,18 @@ export default function App() {
         setPuntosAcumulados(userData.puntosAcumulados);
         setRacha(userData.racha);
         setHistorial(userData);
+        setPuedeJugar(puedeJugarHoy(userData));
+      } else {
+        setPuedeJugar(true);
       }
       
       const leaderboardData = await getLeaderboard(10);
       setLeaderboard(leaderboardData);
+      
+      return userData;
     } catch (error) {
       console.error('Error cargando datos:', error);
+      return null;
     }
   };
 
@@ -272,6 +285,9 @@ export default function App() {
   };
 
   const iniciarDesafio = () => {
+    if (!puedeJugar) {
+      return; // No permitir jugar si ya jugó hoy
+    }
     setPantalla('juego');
     setDesafioActual(0);
     setRespuestaSeleccionada(null);
@@ -460,25 +476,49 @@ export default function App() {
               </div>
             </div>
 
-            <div className="bg-white/20 rounded-xl p-4 mb-4">
-              <div className="flex items-center gap-2 mb-2">
-                <Icons.Clock />
-                <span className="text-white text-sm font-semibold">Temas de hoy:</span>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <span className="bg-white/30 text-white text-xs px-3 py-1 rounded-full">Monedas</span>
-                <span className="bg-white/30 text-white text-xs px-3 py-1 rounded-full">Inflación</span>
-                <span className="bg-white/30 text-white text-xs px-3 py-1 rounded-full">Inversión</span>
-              </div>
-            </div>
+            {puedeJugar ? (
+              <>
+                <div className="bg-white/20 rounded-xl p-4 mb-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Icons.Clock />
+                    <span className="text-white text-sm font-semibold">Temas de hoy:</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="bg-white/30 text-white text-xs px-3 py-1 rounded-full">Monedas</span>
+                    <span className="bg-white/30 text-white text-xs px-3 py-1 rounded-full">Inflación</span>
+                    <span className="bg-white/30 text-white text-xs px-3 py-1 rounded-full">Inversión</span>
+                  </div>
+                </div>
 
-            <button
-              onClick={iniciarDesafio}
-              className="w-full bg-white text-orange-600 font-bold py-4 rounded-xl shadow-lg hover:scale-105 transition-transform flex items-center justify-center gap-2"
-            >
-              ¡Empezar ahora!
-              <Icons.ChevronRight />
-            </button>
+                <button
+                  onClick={iniciarDesafio}
+                  className="w-full bg-white text-orange-600 font-bold py-4 rounded-xl shadow-lg hover:scale-105 transition-transform flex items-center justify-center gap-2"
+                >
+                  ¡Empezar ahora!
+                  <Icons.ChevronRight />
+                </button>
+              </>
+            ) : (
+              <>
+                <div className="bg-white/20 rounded-xl p-4 mb-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-white text-2xl">✅</span>
+                    <span className="text-white text-sm font-semibold">Completaste el desafío de hoy</span>
+                  </div>
+                  <p className="text-orange-100 text-sm">
+                    Volvé mañana para nuevas preguntas y seguir sumando puntos
+                  </p>
+                </div>
+
+                <button
+                  disabled
+                  className="w-full bg-white/30 text-white/60 font-bold py-4 rounded-xl cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  <Icons.Clock />
+                  <span>Volvé mañana</span>
+                </button>
+              </>
+            )}
           </div>
 
           <button
